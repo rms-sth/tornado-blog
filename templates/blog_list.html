@@ -1,0 +1,6 @@
+{% for blog in blogs  %}
+<h1><a href="/blog-detail/{{blog.id}}/">{{blog.title}}</a></h1>
+<p>{{blog.text}}</p>
+<p>{{blog.created_date}}</p>
+------------------------
+{% end %}
