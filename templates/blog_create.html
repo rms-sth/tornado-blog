@@ -1,11 +1,11 @@
 <form action="" method="post">
     <p>
         <label for="title">Enter Title:</label>
-        <input type="text" name="title" id="title">
+        <input type="text" name="title" id="title" value="{% if blog %}{{ blog.title }}{% end %}">
     </p>
     <p>
         <label for="text"></label>
-        <textarea name="text" id="text" cols="30" rows="10"></textarea>
+        <textarea name="text" id="text" cols="30" rows="10">{% if blog %}{{ blog.text }}{% end %}</textarea>
     </p>
     <p>
         <input type="submit" value="Post">

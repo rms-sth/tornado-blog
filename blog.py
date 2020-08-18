@@ -19,6 +19,7 @@ class Application(tornado.web.Application):
             url(r"/", BlogList, name="blog_list"),
             url(r"/blog-detail/([0-9Xx\-]+)/", BlogDetail, name="blog_detail"),
             url(r"/blog-create/", BlogCreate, name="blog_create"),
+            url(r"/blog-edit/([0-9Xx\-]+)/", BlogCreate, name="blog_edit"),
         ]
         settings = dict(
             debug=True,
@@ -40,12 +41,21 @@ class BlogDetail(tornado.web.RequestHandler):
 
 
 class BlogCreate(tornado.web.RequestHandler):
-    def get(self):
-        self.render("blog_create.html")
+    def get(self, id=None):
+        blog = dict()
+        if id:
+            blog = Blog.select().where(Blog.id == id).get()
+        self.render("blog_create.html", blog=blog)
 
-    def post(self):
+    def post(self, id=None):
         title = self.get_argument("title")
         text = self.get_argument("text")
+        if id:
+            blog = Blog.select().where(Blog.id == id).get()
+            blog.title = title
+            blog.text = text
+            blog.save()
+            return self.redirect(self.reverse_url("blog_detail", blog.id))
         blog = Blog.create(title=title, text=text)
         self.redirect(self.reverse_url("blog_detail", blog.id))
 
