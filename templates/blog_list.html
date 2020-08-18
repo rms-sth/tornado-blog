@@ -1,3 +1,6 @@
+<a href="{{ reverse_url('blog_create') }}"><button>Add New Post</button></a>
+
+
 {% for blog in blogs  %}
 <h1><a href="{{ reverse_url('blog_detail',  blog.id) }}">{{blog.title}}</a></h1>
 <p>{{blog.text}}</p>
