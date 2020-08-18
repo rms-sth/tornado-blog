@@ -13,7 +13,7 @@ class Blog(Model):
     published_date = DateTimeField(null=True)
 
     class Meta:
-        database = db  # This model uses the "people.db" database.
+        database = db 
 
 
 db.connect()

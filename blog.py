@@ -6,6 +6,7 @@ import tornado.web
 
 from tornado.web import Application
 from tornado.options import define, options
+from tornado.web import url
 
 from models import Blog
 
@@ -15,8 +16,8 @@ define("port", default=8000, help="run on the given port", type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
-            (r"/", BlogList),
-            (r"/blog-detail/([0-9Xx\-]+)/", BlogDetail),
+            url(r"/", BlogList, name='blog_list'),
+            url(r"/blog-detail/([0-9Xx\-]+)/", BlogDetail, name='blog_detail'),
         ]
         settings = dict(
             debug=True,
