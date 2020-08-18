@@ -41,10 +41,20 @@ class BlogCreate(tornado.web.RequestHandler):
             blog = await self.application.objects.get(Blog, id=id)
             blog.title = title
             blog.text = text
-            blog = await self.application.objects.update(blog)
+            await self.application.objects.update(blog)
             return self.redirect(self.reverse_url("blog_detail", id))
         blog = await self.application.objects.create(Blog, title=title, text=text)
         self.redirect(self.reverse_url("blog_detail", blog.id))
+
+
+class BlogDelete(tornado.web.RequestHandler):
+    async def get(self, id):
+        self.render("blog_delete.html", id=id)
+
+    async def post(self, id):
+        query = Blog.delete().where(Blog.id == id)
+        await self.application.objects.execute(query)
+        self.redirect(self.reverse_url("blog_list"))
 
 
 if __name__ == "__main__":
@@ -55,6 +65,7 @@ if __name__ == "__main__":
         url(r"/blog-detail/([0-9Xx\-]+)/", BlogDetail, name="blog_detail"),
         url(r"/blog-create/", BlogCreate, name="blog_create"),
         url(r"/blog-edit/([0-9Xx\-]+)/", BlogCreate, name="blog_edit"),
+        url(r"/blog-delete/([0-9Xx\-]+)/", BlogDelete, name="blog_delete"),
     ]
 
     settings = dict(

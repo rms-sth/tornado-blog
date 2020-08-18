@@ -1,5 +1,6 @@
-from models import Blog
 import datetime
+
+from models import Blog
 
 blog1 = Blog(title="New Blog 1", text="New Blog 1")
 blog2 = Blog(title="New Blog 2", text="New Blog 2")

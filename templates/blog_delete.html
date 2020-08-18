@@ -1,0 +1,8 @@
+<form action="" method="post">
+    <input type="hidden" name="id" value="{{id}}">
+    <label>Do you really want to delete this blog??</label>
+    <input type="submit" value="Yes">
+    <a href="{{ reverse_url('blog_list') }}">
+        <button>No</button>
+    </a>
+</form>
