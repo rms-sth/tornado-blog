@@ -10,6 +10,7 @@ from tornado.options import define, options
 from tornado.web import url
 
 from models import Blog, db
+from forms import BlogForm
 
 define("port", default=8000, help="run on the given port", type=int)
 
@@ -29,22 +30,28 @@ class BlogDetail(tornado.web.RequestHandler):
 
 class BlogCreate(tornado.web.RequestHandler):
     async def get(self, id=None):
+        form = BlogForm()
         blog = dict()
         if id:
             blog = await self.application.objects.get(Blog, id=id)
-        self.render("blog_create.html", blog=blog)
+            form = BlogForm(title=blog.title, text=blog.text)
+        self.render("blog_create.html", blog=blog, form=form)
 
     async def post(self, id=None):
         title = self.get_argument("title")
         text = self.get_argument("text")
-        if id:
-            blog = await self.application.objects.get(Blog, id=id)
-            blog.title = title
-            blog.text = text
-            await self.application.objects.update(blog)
-            return self.redirect(self.reverse_url("blog_detail", id))
-        blog = await self.application.objects.create(Blog, title=title, text=text)
-        self.redirect(self.reverse_url("blog_detail", blog.id))
+
+        form = BlogForm(title=title, text=text)
+        if form.validate():
+            if id:
+                blog = await self.application.objects.get(Blog, id=id)
+                blog.title = title
+                blog.text = text
+                await self.application.objects.update(blog)
+                return self.redirect(self.reverse_url("blog_detail", id))
+            blog = await self.application.objects.create(Blog, title=title, text=text)
+            return self.redirect(self.reverse_url("blog_detail", blog.id))
+        return self.render("blog_create.html", form=form)
 
 
 class BlogDelete(tornado.web.RequestHandler):

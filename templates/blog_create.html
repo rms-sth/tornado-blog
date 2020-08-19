@@ -1,11 +1,27 @@
+<style>
+    .errors {
+        color: red;
+    }
+</style>
+
 <form action="" method="post">
     <p>
-        <label for="title">Enter Title:</label>
-        <input type="text" name="title" id="title" value="{% if blog %}{{ blog.title }}{% end %}">
+        {% raw form.title.label %}:
+        {% raw form.title %}
+        {% if form.title.errors %}
+        <ul class="errors">
+            {% for error in form.title.errors %}<li>{{ error }}</li>{% end %}
+        </ul>
+        {% end %}
     </p>
     <p>
-        <label for="text"></label>
-        <textarea name="text" id="text" cols="30" rows="10">{% if blog %}{{ blog.text }}{% end %}</textarea>
+        {% raw form.text.label %}:
+        {% raw form.text(rows='10',cols='50') %}
+        {% if form.text.errors %}
+        <ul class="errors">
+            {% for error in form.text.errors %}<li>{{ error }}</li>{% end %}
+        </ul>
+        {% end %}
     </p>
     <p>
         <input type="submit" value="Post">
