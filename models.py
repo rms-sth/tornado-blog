@@ -1,22 +1,41 @@
 import asyncio
 import datetime
+from enum import unique
 
 import peewee_async
-from peewee import Model, CharField, TextField, DateTimeField
+from peewee import ForeignKeyField, Model, CharField, TextField, DateTimeField
+from wtforms.fields.core import BooleanField
 
 db = peewee_async.PostgresqlDatabase(
     "blog_tornado", user="blog_tornado", password="blog_tornado", host="127.0.0.1",
 )
 
-
-class Blog(Model):
-    title = CharField(max_length=200)
-    text = TextField()
-    created_date = DateTimeField(default=datetime.datetime.now)
-    published_date = DateTimeField(null=True)
-
+class BaseModel(Model):
     class Meta:
         database = db
+
+class User(BaseModel):
+    username = CharField(max_length=20, unique=True)
+    email = CharField(max_length=50, unique=True)
+    password = CharField()
+    first_name = CharField(max_length=20)
+    middle_name = CharField(max_length=20, null=True)
+    last_name = CharField(max_length=20)
+    created_at = DateTimeField(default=datetime.datetime.now)
+    is_active = BooleanField(default=True)
+    is_superuser = BooleanField(default=False)
+    last_login = DateTimeField(null=True)
+
+    def __str__(self):
+        return self.username
+
+class Blog(BaseModel):
+    author = ForeignKeyField(User, backref='blogs')
+    title = CharField(max_length=200)
+    text = TextField()
+    created_at = DateTimeField(default=datetime.datetime.now)
+    updated_at = DateTimeField(null=True)
+    published_date = DateTimeField(null=True)
 
     def __str__(self):
         return self.title
@@ -27,11 +46,15 @@ class Blog(Model):
 ##########################################################################################
 # Sync code
 # db.connect()
-# db.create_tables([Blog])
+# # # creating table
+# db.create_tables([User, Blog])
+# # # deleting table
+# # db.drop_tables([User,Blog])
+# db.close()
 
 # Blog.create_table(True)
 # Blog.create(title="Yo, I can do it sync!",text="Yo, I can do it sync!")
-# db.close()
+# Blog.drop_table(True)
 
 
 ##########################################################################################

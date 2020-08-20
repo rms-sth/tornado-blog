@@ -1,0 +1,29 @@
+<style>
+    .errors {
+        color: red;
+    }
+</style>
+
+<form action="" method="post">
+    <p>
+        {% raw form.username.label %}:
+        {% raw form.username %}
+        {% if form.username.errors %}
+        <ul class="errors">
+            {% for error in form.username.errors %}<li>{{ error }}</li>{% end %}
+        </ul>
+        {% end %}
+    </p>
+    <p>
+        {% raw form.password.label %}:
+        {% raw form.password(rows='10',cols='50') %}
+        {% if form.password.errors %}
+        <ul class="errors">
+            {% for error in form.password.errors %}<li>{{ error }}</li>{% end %}
+        </ul>
+        {% end %}
+    </p>
+    <p>
+        <input type="submit" value="Login">
+    </p>
+</form>
